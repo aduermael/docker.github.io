@@ -14,7 +14,7 @@ type FileTestFunc func(path string) error
 var (
 	test []FileTestFunc = []FileTestFunc{
 		markdownHasMainTitle,
-		lowercaseExtension,
+		frontmatterHasTitle,
 	}
 )
 
@@ -23,21 +23,17 @@ func main() {
 	fmt.Println("RUN TESTS")
 	fmt.Println("-----------------")
 
-	var err error
-
 	//
 	for i, fn := range test {
 		fmt.Printf("--- test %d\n", i+1)
-		err = filepath.Walk("/docs", func(path string, info os.FileInfo, err error) error {
-			return fn(path)
+		filepath.Walk("/docs", func(path string, info os.FileInfo, err error) error {
+			err = fn(path)
+			if err != nil {
+				fmt.Println(err.Error(), "-", path)
+				// os.Exit(1)
+			}
+			return nil
 		})
-		if err != nil {
-			fmt.Println("----------------------")
-			fmt.Println("TEST FAILED")
-			fmt.Println(err.Error())
-			fmt.Println("----------------------")
-			os.Exit(1)
-		}
 	}
 
 	fmt.Println("----------------------")
@@ -45,11 +41,9 @@ func main() {
 	fmt.Println("----------------------")
 }
 
-//
-//
+// --------------------
 // FILE EXTENSIONS
-//
-//
+// --------------------
 
 func lowercaseExtension(path string) error {
 	ext := filepath.Ext(path)
