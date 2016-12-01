@@ -1,2 +1,3 @@
 #!/bin/bash
-echo "pre build test"
+pwd
+exit 1

@@ -9,4 +9,4 @@ WORKDIR /go/src/validator
 
 # when running the container, MOUNT docs repo in /docs
 
-CMD ash
+CMD ["go", "test"]
